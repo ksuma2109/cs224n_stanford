@@ -169,7 +169,6 @@ class NMT(nn.Module):
         ###         https://pytorch.org/docs/stable/torch.html#torch.cat
         ###     Tensor Permute:
         ###         https://pytorch.org/docs/stable/tensors.html#torch.Tensor.permute
-
         X = self.model_embeddings.source(source_padded)
         X = pack_padded_sequence(X, source_lengths, batch_first=False)
         enc_hiddens, (last_hidden, last_cell) = self.encoder(X)
@@ -248,7 +247,6 @@ class NMT(nn.Module):
         ###         https://pytorch.org/docs/stable/torch.html#torch.cat
         ###     Tensor Stacking:
         ###         https://pytorch.org/docs/stable/torch.html#torch.stack
-
         enc_hiddens_proj = self.att_projection(enc_hiddens)
 
         Y = self.model_embeddings.target(target_padded)
@@ -355,8 +353,7 @@ class NMT(nn.Module):
         ###         https://pytorch.org/docs/stable/torch.html#torch.cat
         ###     Tanh:
         ###         https://pytorch.org/docs/stable/torch.html#torch.tanh
-
-        alpha_t = nn.functional.softmax(e_t, dim=-1)
+        alpha_t = nn.functional.softmax(e_t, dim=1)
         alpha_t = torch.unsqueeze(alpha_t, dim=1)
         a_t = torch.bmm(alpha_t, enc_hiddens)
         a_t = torch.squeeze(a_t, dim=1)
@@ -364,7 +361,6 @@ class NMT(nn.Module):
         V_t = self.combined_output_projection(U_t)
         V_t = torch.tanh(V_t)
         O_t = self.dropout(V_t)
-
 
         ### END YOUR CODE
 
